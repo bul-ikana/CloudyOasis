@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Cloud : WaterBody
 {
+    public ParticleSystem rain;
     public ParticleSystem steam;
 
     void Start()
@@ -35,6 +36,7 @@ public class Cloud : WaterBody
 
     public void Rain (int rainSize) 
     {
+        rain.Play();
         Deplete(rainSize);
     }
 }
