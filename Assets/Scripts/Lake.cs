@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
-public class Cloud : WaterBody
+public class Lake : WaterBody
 {
     public ParticleSystem steam;
-
+    
     void Start()
     {
         Form();
@@ -14,27 +14,25 @@ public class Cloud : WaterBody
 
     void Update()
     {
-
+        
     }
 
     // --------------------------------------------------------- //
 
-    private void Form ()
-    {
-        water = 100;
+    private void Form () {
+        water   = 0;
         UpdateScore();
     }
 
+    
+
     // --------------------------------------------------------- //
 
-    public void Dissipate (int size)
+    public void Evaporate(int size)
     {
-        steam.Play();
-        Deplete(size);
-    }
-
-    public void Rain (int rainSize) 
-    {
-        Deplete(rainSize);
+        if (size > 0) {
+            steam.Play();
+            Deplete(size);
+        } 
     }
 }
