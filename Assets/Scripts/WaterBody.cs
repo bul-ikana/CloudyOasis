@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class WaterBody : MonoBehaviour
 {
-	public int water;
+	public int water = 0;
 	public Text score;
 
     // --------------------------------------------------------- //

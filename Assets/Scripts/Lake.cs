@@ -6,33 +6,41 @@ using UnityEngine;
 public class Lake : WaterBody
 {
     public ParticleSystem steam;
-    
-    void Start()
-    {
-        Form();
-    }
+
+    private int evaporationSize     =   0;
+    private float elapsedTime       =   0f;
+    private float evaporationTime   =   0f;
+    private float evaporationRate   =   0f;
 
     void Update()
     {
-        
+        Evaporate();
     }
 
     // --------------------------------------------------------- //
 
-    private void Form () {
-        water   = 0;
-        UpdateScore();
-    }
-
-    
-
-    // --------------------------------------------------------- //
-
-    public void Evaporate(int size)
+    public void Set (float et, float er) 
     {
-        if (size > 0) {
-            steam.Play();
-            Deplete(size);
+        evaporationTime = et;
+        evaporationRate = er;
+    }
+
+    // --------------------------------------------------------- //
+
+    private void Evaporate()
+    {
+        elapsedTime += Time.deltaTime;
+        if (elapsedTime >= evaporationTime) {
+            elapsedTime = elapsedTime % evaporationTime;
+
+            evaporationSize = Mathf.FloorToInt(water * evaporationRate);
+
+            if (evaporationSize > 0) {
+                steam.Play();
+                Deplete(evaporationSize);
+                GameSystem.Instance.cloud.Fill(evaporationSize);
+            }
+
         } 
     }
 }

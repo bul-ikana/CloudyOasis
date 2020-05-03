@@ -8,35 +8,39 @@ public class Cloud : WaterBody
     public ParticleSystem rain;
     public ParticleSystem steam;
 
-    void Start()
-    {
-        Form();
-    }
+    private int dissipationSize     =   0;
+    private float dissipationTime   =   0f;
+    private float elapsedTime       =   -2f;
 
     void Update()
     {
-
+        Dissipate();
     }
 
     // --------------------------------------------------------- //
 
-    private void Form ()
+    public void Set (float dt, int ds)
     {
-        water = 100;
-        UpdateScore();
+        dissipationTime = dt;
+        dissipationSize = ds;
     }
 
-    // --------------------------------------------------------- //
-
-    public void Dissipate (int size)
-    {
-        steam.Play();
-        Deplete(size);
-    }
 
     public void Rain (int rainSize) 
     {
         rain.Play();
         Deplete(rainSize);
+    }
+
+    // --------------------------------------------------------- //
+
+    private void Dissipate ()
+    {
+        elapsedTime += Time.deltaTime;
+        if (elapsedTime >= dissipationTime) {
+            elapsedTime = elapsedTime % dissipationTime;
+            steam.Play();
+            Deplete(dissipationSize);
+        }
     }
 }

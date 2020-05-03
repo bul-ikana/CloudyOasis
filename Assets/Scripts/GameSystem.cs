@@ -8,17 +8,15 @@ public class GameSystem : MonoBehaviour
     static public GameSystem Instance { get { return m_Instance; } }
 
     private int rainSize;
+    private int lakeInitSize;
+    private int cloudInitSize;
     private int dissipationSize;
     private float dissipationTime;
     private float evaporationTime;
     private float evaporationRate;
 
-    private int evaporationSize = 0;
-    private float elapsedDissipationTime = 0f;
-    private float elapsedEvaporationTime = 0f;
-
-    private Cloud cloud;
-    private Lake lake;
+    public Cloud cloud;
+    public Lake lake;
 
     void Awake()
     {
@@ -31,19 +29,18 @@ public class GameSystem : MonoBehaviour
         m_Instance = null;
     }
 
-    void Update()
-    {
-        DissipateCloud();
-        EvaporateLake();
-    }
-
     // --------------------------------------------------------- //
 
     private void SetValues ()
     {
+        // CLoud
         rainSize        = 1;
         dissipationSize = 1;
         dissipationTime = 3f;
+        cloudInitSize   = 100;
+
+        // Lake
+        lakeInitSize    = 0;
         evaporationTime = 5.1f;
         evaporationRate = 0.1f;
     }
@@ -51,30 +48,18 @@ public class GameSystem : MonoBehaviour
     private void SetObjects ()
     {
         m_Instance  = this;
+
         cloud       = GameObject.Find("cloud").GetComponent<Cloud>();
         lake        = GameObject.Find("lake").GetComponent<Lake>();
+
+        cloud.Fill(cloudInitSize);
+        cloud.Set(dissipationTime, dissipationSize);
+
+        lake.Fill(lakeInitSize);
+        lake.Set(evaporationTime, evaporationRate);
     }
 
-    private void DissipateCloud()
-    {
-        elapsedDissipationTime += Time.deltaTime;
-        if (elapsedDissipationTime >= dissipationTime) {
-            elapsedDissipationTime = elapsedDissipationTime % dissipationTime;
-            cloud.Dissipate(dissipationSize);
-        }
-    }
 
-    private void EvaporateLake()
-    {
-        elapsedEvaporationTime += Time.deltaTime;
-        if (elapsedEvaporationTime >= evaporationTime) {
-            elapsedEvaporationTime = elapsedEvaporationTime % evaporationTime;
-
-            evaporationSize = Mathf.FloorToInt(lake.water * evaporationRate);
-            lake.Evaporate(evaporationSize);
-            cloud.Fill(evaporationSize);
-        }
-    }
 
     // --------------------------------------------------------- //
     public void Rain()
