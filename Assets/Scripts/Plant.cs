@@ -12,7 +12,11 @@ public class Plant : MonoBehaviour
     public List<Sprite> phase5Sprites;
     public List<Sprite> phase6Sprites;
 
-    private int phase = 0;
+    private int plantWater      =   0;
+    private float plantTime     =   0f;
+    private float elapsedTime;
+
+    private bool log = false;
 
     void Start ()
     {
@@ -26,22 +30,25 @@ public class Plant : MonoBehaviour
         this.GetComponent<SpriteRenderer>().sprite = null;
     }
 
-    // void start
+    void Update ()
+    {
+        elapsedTime += Time.deltaTime;
+        if (elapsedTime >= plantTime) {
+            elapsedTime = elapsedTime % plantTime;
+                GameSystem.Instance.lake.Fill(plantWater);
+        } 
+    }
     
     // --------------------------------------------------------- //
 
-    public void Set(
-        int p1c, int p2c, int p3c, int p4c, int p5c, int p6c,
-        int p1w, int p2w, int p3w, int p4w, int p5w, int p6w,
-        float p1t, float p2t, float p3t, float p4t, float p5t, float p6t
-        )
+    public void Set(int phase, int pw, float pt)
     {
+        elapsedTime = 0f;
+        plantWater = pw;
+        plantTime = pt;
 
+        if (phase > 0) {
+            this.GetComponent<SpriteRenderer>().sprite = sprites[phase - 1][Random.Range(0, sprites[phase - 1].Count)];   
+        }
     }
-
-    public void setPhase (int phase)
-    {
-        this.GetComponent<SpriteRenderer>().sprite = sprites[phase - 1][Random.Range(0, sprites[phase - 1].Count)];   
-    }
-
 }

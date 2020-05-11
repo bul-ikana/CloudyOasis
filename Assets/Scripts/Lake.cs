@@ -40,7 +40,6 @@ public class Lake : WaterBody
                 Deplete(evaporationSize);
                 GameSystem.Instance.cloud.Fill(evaporationSize);
             }
-
         } 
     }
 }

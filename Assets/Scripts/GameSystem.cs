@@ -7,6 +7,10 @@ public class GameSystem : MonoBehaviour
     static private GameSystem m_Instance;
     static public GameSystem Instance { get { return m_Instance; } }
 
+    private int index;
+
+    public GameObject canvas;
+
     // Cloud
     private int rainSize;
     private int cloudInitSize;
@@ -69,6 +73,15 @@ public class GameSystem : MonoBehaviour
         m_Instance = null;
     }
 
+    void Update () 
+    {
+        if (cloud.water == 0) {
+            canvas.gameObject.SetActive(false);
+            Time.timeScale = 0;
+        }
+
+    }
+
     // --------------------------------------------------------- //
 
     private void SetValues ()
@@ -86,25 +99,25 @@ public class GameSystem : MonoBehaviour
 
         // Plants
         plant1cost = 10;
-        plant2cost = 100;
-        plant3cost = 1000;
-        plant4cost = 10000;
-        plant5cost = 100000;
-        plant6cost = 1000000;
+        plant2cost = 20;
+        plant3cost = 60;
+        plant4cost = 240;
+        plant5cost = 10000;
+        plant6cost = 100000;
 
-        plant1time = 10f;
-        plant2time = 100f;
-        plant3time = 1000f;
-        plant4time = 10000f;
-        plant5time = 100000f;
-        plant6time = 1000000f;
+        plant1time = 1f;
+        plant2time = 10f;
+        plant3time = 100f;
+        plant4time = 1000f;
+        plant5time = 10000f;
+        plant6time = 100000f;
 
-        plant1water = 10;
-        plant2water = 100;
-        plant3water = 1000;
-        plant4water = 10000;
-        plant5water = 100000;
-        plant6water = 1000000;
+        plant1water = 1;
+        plant2water = 20;
+        plant3water = 300;
+        plant4water = 4000;
+        plant5water = 50000;
+        plant6water = 600000;
     }
 
     private void SetObjects ()
@@ -127,41 +140,12 @@ public class GameSystem : MonoBehaviour
         lake.Fill(lakeInitSize);
         lake.Set(evaporationTime, evaporationRate);
 
-        plant1.Set(
-            plant1cost, plant2cost, plant3cost, plant4cost, plant5cost, plant6cost,
-            plant1water, plant2water, plant3water, plant4water, plant5water, plant6water,
-            plant1time, plant2time, plant3time, plant4time, plant5time, plant6time
-        );
-
-        plant2.Set(
-            plant1cost, plant2cost, plant3cost, plant4cost, plant5cost, plant6cost,
-            plant1water, plant2water, plant3water, plant4water, plant5water, plant6water,
-            plant1time, plant2time, plant3time, plant4time, plant5time, plant6time
-        );
-
-        plant3.Set(
-            plant1cost, plant2cost, plant3cost, plant4cost, plant5cost, plant6cost,
-            plant1water, plant2water, plant3water, plant4water, plant5water, plant6water,
-            plant1time, plant2time, plant3time, plant4time, plant5time, plant6time
-        );
-
-        plant4.Set(
-            plant1cost, plant2cost, plant3cost, plant4cost, plant5cost, plant6cost,
-            plant1water, plant2water, plant3water, plant4water, plant5water, plant6water,
-            plant1time, plant2time, plant3time, plant4time, plant5time, plant6time
-        );
-
-        plant5.Set(
-            plant1cost, plant2cost, plant3cost, plant4cost, plant5cost, plant6cost,
-            plant1water, plant2water, plant3water, plant4water, plant5water, plant6water,
-            plant1time, plant2time, plant3time, plant4time, plant5time, plant6time
-        );
-
-        plant6.Set(
-            plant1cost, plant2cost, plant3cost, plant4cost, plant5cost, plant6cost,
-            plant1water, plant2water, plant3water, plant4water, plant5water, plant6water,
-            plant1time, plant2time, plant3time, plant4time, plant5time, plant6time
-        );
+        plant1.Set(0, 0, 0f);
+        plant2.Set(0, 0, 0f);
+        plant3.Set(0, 0, 0f);
+        plant4.Set(0, 0, 0f);
+        plant5.Set(0, 0, 0f);
+        plant6.Set(0, 0, 0f);
 
         phase0 = new List<Plant>();
         phase1 = new List<Plant>();
@@ -189,54 +173,66 @@ public class GameSystem : MonoBehaviour
 
     public void Plant1 ()
     {   
-        int index = Random.Range(0, phase0.Count);
-        tempPlant = phase0[index];
-        tempPlant.setPhase(1);
-        phase0.RemoveAt(index);
-        phase1.Add(tempPlant);
+        if (lake.water >= plant1cost && phase0.Count > 0) {
+            index = Random.Range(0, phase0.Count);
+            phase0[index].Set(1, plant1water, plant1time);
+            phase1.Add(phase0[index]);
+            phase0.RemoveAt(index);
+            lake.Deplete(plant1cost);
+        }
     }
 
     public void Plant2 ()
     {
-        int index = Random.Range(0, phase1.Count);
-        tempPlant = phase1[index];
-        tempPlant.setPhase(2);
-        phase1.RemoveAt(index);
-        phase2.Add(tempPlant);
+        if (lake.water >= plant2cost && phase1.Count > 0) {
+            index = Random.Range(0, phase1.Count);
+            phase1[index].Set(2, plant2water, plant2time);
+            phase2.Add(phase1[index]);
+            phase1.RemoveAt(index);
+            lake.Deplete(plant2cost);
+        }
     }
 
     public void Plant3 ()
     {
-        int index = Random.Range(0, phase2.Count);
-        tempPlant = phase2[index];
-        tempPlant.setPhase(3);
-        phase2.RemoveAt(index);
-        phase3.Add(tempPlant);
+        if (lake.water >= plant3cost && phase2.Count > 0) {
+            index = Random.Range(0, phase2.Count);
+            phase2[index].Set(3, plant3water, plant3time);
+            phase3.Add(phase2[index]);
+            phase2.RemoveAt(index);
+            lake.Deplete(plant3cost);
+        }
     }
 
     public void Plant4 ()
     {
-        int index = Random.Range(0, phase3.Count);
-        tempPlant = phase3[index];
-        tempPlant.setPhase(4);
-        phase3.RemoveAt(index);
-        phase4.Add(tempPlant);
+        if (lake.water >= plant4cost && phase3.Count > 0) {
+            index = Random.Range(0, phase3.Count);
+            phase3[index].Set(4, plant4water, plant4time);
+            phase4.Add(phase3[index]);
+            phase3.RemoveAt(index);
+            lake.Deplete(plant4cost);
+        }
     }
 
     public void Plant5 ()
     {
-        int index = Random.Range(0, phase4.Count);
-        tempPlant = phase4[index];
-        tempPlant.setPhase(5);
-        phase4.RemoveAt(index);
-        phase5.Add(tempPlant);
+        if (lake.water >= plant5cost && phase4.Count > 0) {
+            index = Random.Range(0, phase4.Count);
+            phase4[index].Set(5, plant5water, plant5time);
+            phase5.Add(phase4[index]);
+            phase4.RemoveAt(index);
+            lake.Deplete(plant5cost);
+        }
     }
 
     public void Plant6 ()
     {
-        int index = Random.Range(0, phase5.Count);
-        tempPlant = phase5[index];
-        tempPlant.setPhase(6);
-        phase5.RemoveAt(index);
+        if (lake.water >= plant6cost && phase5.Count > 0) {
+            index = Random.Range(0, phase5.Count);
+            phase5[index].Set(6, plant6water, plant6time);
+            phase5.RemoveAt(index);
+            lake.Deplete(plant6cost);
+        }
     }
 }
